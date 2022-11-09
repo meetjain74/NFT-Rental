@@ -9,47 +9,52 @@ import {
   Typography,
 } from "@mui/material";
 import { Box, styled } from "@mui/system";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import { LEND_CARDS } from "../../constants/DefaultData";
 import MyModal from "./MyModal";
 import { useContract, useSigner, useProvider, useAccount } from "wagmi";
 import { contractAddress, contractAbi } from "../../constants/contract";
-import { useMoralisWeb3Api } from "react-moralis";
-import { IpfsStorage } from "@0xsaturn/sdk";
+import { Network, Alchemy } from "alchemy-sdk";
+import defaultNft from "../../constants/defaultNft.jpg";
 
 const Lend = () => {
   const [openModal, setOpenModal] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
+  const [Data , setData] = useState([]);
   const handleLendNowClicked = (index: number) => {
     setOpenModal(true);
     setCurrentItemIndex(index);
   };
 
-  const storage = new IpfsStorage();
+  const settings = {
+    apiKey: "gbH4akq-xjxSNOvPQ0vlliyvu7xi2qo0",
+    network: Network.MATIC_MUMBAI,
+  };
 
-  const Web3Api = useMoralisWeb3Api();
+  const alchemy = new Alchemy(settings);
 
   const { data: account } = useAccount();
 
   // Execute getUserEthNFTs and get the NFTs
-  const [userEthNFTs, setUserEthNFTs] = useState<any>([]);
+  const [UserEthNFTs, setUserEthNFTs] = useState<any[]>([])
+
+  
+  const getUserEthNFTs = async () => {
+    return await alchemy.nft.getNftsForOwner(account?.address!);
+  };
 
   useEffect(() => {
-    const getUserEthNFTs = async () => {
-      console.log(account);
-      if (!account?.address) throw Error("no address due to signer!");
-
-      return await Web3Api.account.getNFTs({
-        chain: "mumbai",
-        address: account?.address!,
-      });
-    };
 
     getUserEthNFTs().then((nfts) => {
-      setUserEthNFTs(nfts.result);
+      setUserEthNFTs(nfts.ownedNfts); 
     });
-  }, [Web3Api, account]);
+  }, [account?.address]);
+
+
+  useEffect(() => {
+    console.log(UserEthNFTs)
+  }, [UserEthNFTs]);
 
   const [txHash, setTxHash] = useState("");
 
@@ -67,7 +72,7 @@ const Lend = () => {
           alignItems: "center",
         }}
       >
-        {userEthNFTs.map((item: any, index: number) => {
+        {UserEthNFTs.map((item: any, index: number) => {
           return (
             <Grid
               sx={{ alignItems: "center", justifyContent: "center" }}
@@ -87,14 +92,15 @@ const Lend = () => {
                       }}
                       component="img"
                       // @ts-ignore
-                      image={
-                        (async () => {
-                          // @ts-ignore
-                          return (
-                            await storage.get(item.metadata)
-                          ).replace("ipfs://", "https://ipfs.io/ipfs/");
-                        })()
-                      }
+                      image={defaultNft}
+                      // image={
+                      //   (async () => {
+                      //     // @ts-ignore
+                      //     return (
+                      //       await storage.get(item.metadata)
+                      //     ).replace("ipfs://", "https://ipfs.io/ipfs/");
+                      //   })()
+                      // }
                       alt={item.image}
                     />
                     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -102,7 +108,7 @@ const Lend = () => {
                         <TextField
                           id="standard-read-only-input"
                           label="Name"
-                          defaultValue={item.name}
+                          defaultValue={item.contract.name}
                           InputProps={{
                             readOnly: true,
                           }}
@@ -112,7 +118,7 @@ const Lend = () => {
                           sx={{ marginTop: "0.5rem" }}
                           id="standard-read-only-input"
                           label="Token ID"
-                          defaultValue={item.token_id}
+                          defaultValue={item.tokenId}
                           InputProps={{
                             readOnly: true,
                           }}
@@ -122,7 +128,7 @@ const Lend = () => {
                           sx={{ marginTop: "0.5rem" }}
                           id="standard-read-only-input"
                           label="Token Address"
-                          defaultValue={item.token_address}
+                          defaultValue={item.contract.address}
                           InputProps={{
                             readOnly: true,
                           }}
@@ -192,12 +198,13 @@ const Lend = () => {
           );
         })}
       </Grid>
-      <MyModal
+      
+      {UserEthNFTs && <MyModal
         currentItemIndex={currentItemIndex}
         open={openModal}
         setOpen={setOpenModal}
-        userNFTs={userEthNFTs}
-      />
+        userNFTs={UserEthNFTs}
+      />}
     </>
   );
 };
@@ -209,6 +216,7 @@ const StyledRentButton = styled(Button)(({ theme }) => ({
     color: "#1053b8",
   },
 }));
+
 const StyledMoreDetailsButton = styled(Button)(({ theme }) => ({
   color: "#6D676E",
   transition: "all 0.5s ease",

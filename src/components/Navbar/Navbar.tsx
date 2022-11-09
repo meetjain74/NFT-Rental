@@ -32,7 +32,7 @@ const Navbar: React.FC<Props> = ({ marginTop }) => {
           <StyledListItems>Rent</StyledListItems>
         </Link>
         <Link to={"/lend"} style={{ textDecoration: "none" }}>
-          <StyledListItems>lend</StyledListItems>
+          <StyledListItems>Lend</StyledListItems>
         </Link>
         {/* <Link to={"/wishlist"} style={{ textDecoration: "none" }}>
           <StyledListItems>Wishlist</StyledListItems>

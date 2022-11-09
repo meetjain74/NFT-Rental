@@ -47,6 +47,9 @@ const MyModal: React.FC<Props> = ({
     signerOrProvider: signer || provider,
   });
 
+  console.log("Hello "+userNFTs[currentItemIndex]+" sba");
+  console.log(userNFTs[currentItemIndex]);
+
   // If signer doesnt exist, show error
   if (!signer) {
     return (
@@ -201,7 +204,7 @@ const MyModal: React.FC<Props> = ({
                       //     "https://ipfs.io/ipfs/"
                       //   );
                       // })()}
-                      alt={item.imageName}
+                      alt={item.contract.name}
                     />
                     <CardContent>
                       <Typography
@@ -209,7 +212,7 @@ const MyModal: React.FC<Props> = ({
                         variant="h5"
                         component="h2"
                       >
-                        {item.name}
+                        {item.contract.name}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -221,7 +224,7 @@ const MyModal: React.FC<Props> = ({
                   >
                     Token ID
                   </Typography>
-                  <Typography variant="body1">{item.token_id}</Typography>
+                  <Typography variant="body1">{item.tokenId}</Typography>
                 </Box>
                 <Divider sx={{ marginBottom: "0.6rem" }} />
                 <Box width="100%" display="flex" justifyContent="space-between">
@@ -232,9 +235,9 @@ const MyModal: React.FC<Props> = ({
                     Address
                   </Typography>
                   <Typography variant="body2">
-                    {item.token_address.slice(0, 5) +
+                    {item.contract.address.slice(0, 5) +
                       ".." +
-                      item.token_address.slice(-5)}
+                      item.contract.address.slice(-5)}
                   </Typography>
                 </Box>
                 <Divider sx={{ marginBottom: "0.6rem" }} />
