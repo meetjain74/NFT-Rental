@@ -34,29 +34,27 @@ const Lend = () => {
 
   const alchemy = new Alchemy(settings);
 
-  const { data: account } = useAccount();
+  const { address } = useAccount();
 
   // Execute getUserEthNFTs and get the NFTs
   const [UserEthNFTs, setUserEthNFTs] = useState<any[]>([])
 
-  
+
   const getUserEthNFTs = async () => {
-    console.log(account?.address!);
-    return await alchemy.nft.getNftsForOwner(account?.address!);
+    console.log(address!);
+    return await alchemy.nft.getNftsForOwner(address!);
   };
 
 
   useEffect(() => {
     getUserEthNFTs().then((nfts) => {
-        setUserEthNFTs(nfts.ownedNfts); 
+        setUserEthNFTs(nfts.ownedNfts);
     });
-  }, [account?.address]);
+  }, [address]);
 
   useEffect(() => {
     console.log(UserEthNFTs);
   }, [UserEthNFTs]);
-
-  const [txHash, setTxHash] = useState("");
 
   return (
     <>
@@ -189,7 +187,7 @@ const Lend = () => {
           );
         })}
       </Grid>
-      
+
       {openModal && UserEthNFTs && <MyModal
         currentItemIndex={currentItemIndex}
         open={openModal}

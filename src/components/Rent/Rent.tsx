@@ -17,6 +17,7 @@ import { contractAddress, contractAbi } from "../../constants/contract";
 import Navbar from "../Navbar/Navbar";
 import MyModal from "./MyModal";
 import Footer from "../LandingPage/Footer";
+import { Contract } from "ethers";
 
 const Rent = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -31,10 +32,10 @@ const Rent = () => {
   const provider = useProvider();
 
   const contract = useContract({
-    addressOrName: contractAddress,
-    contractInterface: contractAbi.abi,
+    address: contractAddress,
+    abi: contractAbi.abi,
     signerOrProvider: signer || provider,
-  });
+  }) as Contract;
 
   // Get all NFTs available for rent
   const [nftKeys, setNftKeys] = useState<string[]>([]);

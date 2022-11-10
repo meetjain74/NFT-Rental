@@ -12,11 +12,11 @@ import {
   Button,
 } from "@mui/material";
 import React, { useState } from "react";
-import { LEND_CARDS } from "../../constants/DefaultData";
 import { styled } from "@mui/system";
 import { useContract, useSigner, useProvider } from "wagmi";
 import { contractAddress, contractAbi } from "../../constants/contract";
 import { getSignerAddress } from "../../utils";
+import { Contract } from "ethers";
 
 interface Props {
   currentItemIndex: number;
@@ -42,10 +42,10 @@ const MyModal: React.FC<Props> = ({
   const provider = useProvider();
 
   const contract = useContract({
-    addressOrName: contractAddress,
-    contractInterface: contractAbi.abi,
+    address: contractAddress,
+    abi: contractAbi.abi,
     signerOrProvider: signer || provider,
-  });
+  }) as Contract;
 
   console.log(userNFTs[currentItemIndex]);
 

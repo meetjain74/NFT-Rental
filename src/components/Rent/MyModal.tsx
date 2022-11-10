@@ -19,6 +19,7 @@ import { RENT_CARDS } from "../../constants/DefaultData";
 import { useContract, useSigner, useProvider } from "wagmi";
 
 import { contractAddress, contractAbi } from "../../constants/contract";
+import { Contract } from "ethers";
 
 interface Props {
   currentItemIndex: number;
@@ -35,10 +36,10 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex }) => {
   const provider = useProvider();
 
   const contract = useContract({
-    addressOrName: contractAddress,
-    contractInterface: contractAbi.abi,
+    address: contractAddress,
+    abi: contractAbi.abi,
     signerOrProvider: signer || provider,
-  });
+  }) as Contract;
 
   // If signer doesnt exist, show error
   if (!signer) {

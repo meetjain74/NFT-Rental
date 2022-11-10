@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Box, List, ListItem, Typography, Button } from "@mui/material";
 import { styled } from "@mui/system";
 
-import { useAccount,useConnect,useDisconnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 
 interface Props {
   marginTop: number;
@@ -12,15 +12,13 @@ interface Props {
 
 const Navbar: React.FC<Props> = ({ marginTop }) => {
   const {
-    activeConnector,
     connect,
     connectors,
-    error,
-    isConnecting,
     pendingConnector,
+    isLoading
   } = useConnect();
 
-  //const { address, connector, isConnected } = useAccount();
+  const { address, connector: activeConnector, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
 
   return (
@@ -55,14 +53,14 @@ const Navbar: React.FC<Props> = ({ marginTop }) => {
               key={x.id}
               onClick={() => {
                 console.log("Connecting to "+x.id);
-                connect(x);
+                connect({ connector: x });
                 console.log("Connected to "+x.id);
               }}
               style={{ marginTop: `${marginTop}rem` }}
               variant="outlined"
             >
               {x.name}
-              {isConnecting && pendingConnector?.id === x.id && " (Connecting)"}
+              {isLoading && pendingConnector?.id === x.id && " (Connecting)"}
             </StyledButton>
           ))}
         </>
