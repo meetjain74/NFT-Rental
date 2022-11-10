@@ -31,7 +31,6 @@ const MyModal: React.FC<Props> = ({
   currentItemIndex,
   userNFTs,
 }) => {
-  console.log("dyusguygegu");
   const [numberOfDays, setNumberOfDays] = useState(0);
   const [collateral, setCollateral] = useState(0);
   const [dailyPrice, setDailyPrice] = useState(0);
@@ -65,19 +64,19 @@ const MyModal: React.FC<Props> = ({
     setOpen(false);
   };
 
-  const handelNumberOfDaysChanged = (event: any) => {
+  const handleNumberOfDaysChanged = (event: any) => {
     setNumberOfDays(parseInt(event.target.value));
   };
 
-  const handelCollateralChanged = (event: any) => {
+  const handleCollateralChanged = (event: any) => {
     setCollateral(parseInt(event.target.value));
   };
 
-  const handelDailyPriceChanged = (event: any) => {
+  const handleDailyPriceChanged = (event: any) => {
     setDailyPrice(parseInt(event.target.value));
   };
 
-  const handelApproveClicked = async () => {
+  const handleApproveClicked = async () => {
     console.log(numberOfDays);
     console.log(collateral);
     console.log(dailyPrice);
@@ -153,25 +152,25 @@ const MyModal: React.FC<Props> = ({
                   style={{ width: "20rem" }}
                   label="Enter Duration in days(max of 100 days)"
                   variant="standard"
-                  onChange={(e) => handelNumberOfDaysChanged(e)}
+                  onChange={(e) => handleNumberOfDaysChanged(e)}
                 />
                 <div style={{ marginTop: "1rem" }}></div>
                 <TextField
                   style={{ width: "20rem" }}
-                  label="Enter Coletral"
+                  label="Enter Collateral"
                   variant="standard"
-                  onChange={(e) => handelCollateralChanged(e)}
+                  onChange={(e) => handleCollateralChanged(e)}
                 />
                 <div style={{ marginTop: "1rem" }}></div>
                 <TextField
                   style={{ width: "20rem" }}
                   label="Enter Daily Price"
                   variant="standard"
-                  onChange={(e) => handelDailyPriceChanged(e)}
+                  onChange={(e) => handleDailyPriceChanged(e)}
                 />
                 <div style={{ marginTop: "3rem" }}></div>
                 <StyledButton
-                  onClick={handelApproveClicked}
+                  onClick={handleApproveClicked}
                   variant="contained"
                 >
                   Approve
@@ -197,13 +196,7 @@ const MyModal: React.FC<Props> = ({
                         width: "15rem",
                       }}
                       component="img"
-                      // image={(async () => {
-                      //   // @ts-ignore
-                      //   return (await storage.get(item.metadata)).image.replace(
-                      //     "ipfs://",
-                      //     "https://ipfs.io/ipfs/"
-                      //   );
-                      // })()}
+                      image={item.rawMetadata.image}
                       alt={item.contract.name}
                     />
                     <CardContent>

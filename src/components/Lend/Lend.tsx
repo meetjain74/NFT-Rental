@@ -91,17 +91,8 @@ const Lend = () => {
                         flex: "1",
                       }}
                       component="img"
-                      // @ts-ignore
                       image={item.rawMetadata.image}
-                      // image={
-                      //   (async () => {
-                      //     // @ts-ignore
-                      //     return (
-                      //       await storage.get(item.metadata)
-                      //     ).replace("ipfs://", "https://ipfs.io/ipfs/");
-                      //   })()
-                      // }
-                      alt={defaultNft}
+                      alt={item.contract.name}
                     />
                     <Box sx={{ display: "flex", flexDirection: "column" }}>
                       <CardContent>
