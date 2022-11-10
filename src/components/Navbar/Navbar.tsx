@@ -2,9 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import { Box, List, ListItem, Typography, Button } from "@mui/material";
+import { useEffect } from "react";
 import { styled } from "@mui/system";
 
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useContract, useSigner, useProvider } from "wagmi";
+import { contractAddress, contractAbi } from "../../constants/contract";
+import { getSignerAddress } from "../../utils";
+import { Contract } from "ethers";
 
 interface Props {
   marginTop: number;
@@ -20,6 +24,25 @@ const Navbar: React.FC<Props> = ({ marginTop }) => {
 
   const { address, connector: activeConnector, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+
+  // Contract
+  const { data: signer } = useSigner();
+  const provider = useProvider();
+
+  const contract = useContract({
+    address: contractAddress,
+    abi: contractAbi.abi,
+    signerOrProvider: signer || provider,
+  }) as Contract;
+
+  useEffect(() => {
+    if (isConnected) {
+      // const tx = await contract.functions["addUser"](signer?.getAddress);
+      // const receipt = await tx.wait();
+      console.log("Connected to Metamask");
+    }
+  },[isConnected]);
+
 
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -50,11 +73,10 @@ const Navbar: React.FC<Props> = ({ marginTop }) => {
           {connectors.map((x) => (
             <StyledButton
               disabled={!x.ready}
-              key={x.id}
+              key={x.name}
               onClick={() => {
-                console.log("Connecting to "+x.id);
+                console.log("Connecting to "+x.name);
                 connect({ connector: x });
-                console.log("Connected to "+x.id);
               }}
               style={{ marginTop: `${marginTop}rem` }}
               variant="outlined"
