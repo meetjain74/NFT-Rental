@@ -89,7 +89,7 @@ const Lend = () => {
                         flex: "1",
                       }}
                       component="img"
-                      image={item.rawMetadata.image}
+                      image={item.rawMetadata.image!=undefined ? item.rawMetadata.image : defaultNft}
                       alt={item.contract.name}
                     />
                     <Box sx={{ display: "flex", flexDirection: "column" }}>

@@ -17,6 +17,7 @@ import { useContract, useSigner, useProvider } from "wagmi";
 import { contractAddress, contractAbi } from "../../constants/contract";
 import { getSignerAddress } from "../../utils";
 import { Contract } from "ethers";
+import defaultNft from "../../constants/defaultNft.jpg";
 
 interface Props {
   currentItemIndex: number;
@@ -196,7 +197,7 @@ const MyModal: React.FC<Props> = ({
                         width: "15rem",
                       }}
                       component="img"
-                      image={item.rawMetadata.image}
+                      image={item.rawMetadata.image!=undefined ? item.rawMetadata.image : defaultNft}
                       alt={item.contract.name}
                     />
                     <CardContent>
