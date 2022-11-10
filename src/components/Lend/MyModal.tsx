@@ -31,6 +31,7 @@ const MyModal: React.FC<Props> = ({
   currentItemIndex,
   userNFTs,
 }) => {
+  console.log("dyusguygegu");
   const [numberOfDays, setNumberOfDays] = useState(0);
   const [collateral, setCollateral] = useState(0);
   const [dailyPrice, setDailyPrice] = useState(0);
@@ -47,7 +48,6 @@ const MyModal: React.FC<Props> = ({
     signerOrProvider: signer || provider,
   });
 
-  console.log("Hello "+userNFTs[currentItemIndex]+" sba");
   console.log(userNFTs[currentItemIndex]);
 
   // If signer doesnt exist, show error
@@ -55,7 +55,7 @@ const MyModal: React.FC<Props> = ({
     return (
       <>
         <Typography variant="h6">
-          Please connect to MetaMask or WalletConnect to continue
+          <p>Please connect to MetaMask or WalletConnect to continue</p>
         </Typography>
       </>
     );

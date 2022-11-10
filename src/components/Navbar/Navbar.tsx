@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Box, List, ListItem, Typography, Button } from "@mui/material";
 import { styled } from "@mui/system";
 
-import { useConnect } from "wagmi";
+import { useAccount,useConnect,useDisconnect } from "wagmi";
 
 interface Props {
   marginTop: number;
@@ -19,6 +19,9 @@ const Navbar: React.FC<Props> = ({ marginTop }) => {
     isConnecting,
     pendingConnector,
   } = useConnect();
+
+  //const { address, connector, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
 
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -50,12 +53,16 @@ const Navbar: React.FC<Props> = ({ marginTop }) => {
             <StyledButton
               disabled={!x.ready}
               key={x.id}
-              onClick={() => connect(x)}
+              onClick={() => {
+                console.log("Connecting to "+x.id);
+                connect(x);
+                console.log("Connected to "+x.id);
+              }}
               style={{ marginTop: `${marginTop}rem` }}
               variant="outlined"
             >
               {x.name}
-              {isConnecting && pendingConnector?.id === x.id && " (connecting)"}
+              {isConnecting && pendingConnector?.id === x.id && " (Connecting)"}
             </StyledButton>
           ))}
         </>

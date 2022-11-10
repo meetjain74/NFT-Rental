@@ -7,8 +7,6 @@ import "./index.css";
 import App from "./App";
 
 ReactDOM.render(
-  <MoralisProvider appId="E7yry3NsSa93Ox0Qs52lfmDLSitC571pV9mQNeo4" serverUrl="https://sevyswvkdysp.usemoralis.com:2053/server">
-    <App />
-  </MoralisProvider>,
+    <App />,
   document.getElementById("root")
 );

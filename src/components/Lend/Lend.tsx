@@ -41,19 +41,19 @@ const Lend = () => {
 
   
   const getUserEthNFTs = async () => {
+    console.log(account?.address!);
     return await alchemy.nft.getNftsForOwner(account?.address!);
   };
 
-  useEffect(() => {
 
+  useEffect(() => {
     getUserEthNFTs().then((nfts) => {
-      setUserEthNFTs(nfts.ownedNfts); 
+        setUserEthNFTs(nfts.ownedNfts); 
     });
   }, [account?.address]);
 
-
   useEffect(() => {
-    console.log(UserEthNFTs)
+    console.log(UserEthNFTs);
   }, [UserEthNFTs]);
 
   const [txHash, setTxHash] = useState("");
@@ -92,7 +92,7 @@ const Lend = () => {
                       }}
                       component="img"
                       // @ts-ignore
-                      image={defaultNft}
+                      image={item.rawMetadata.image}
                       // image={
                       //   (async () => {
                       //     // @ts-ignore
@@ -101,7 +101,7 @@ const Lend = () => {
                       //     ).replace("ipfs://", "https://ipfs.io/ipfs/");
                       //   })()
                       // }
-                      alt={item.image}
+                      alt={defaultNft}
                     />
                     <Box sx={{ display: "flex", flexDirection: "column" }}>
                       <CardContent>
@@ -149,7 +149,7 @@ const Lend = () => {
                           sx={{ fontWeight: "bold", color: "#6D676E" }}
                           variant="body1"
                         >
-                          Standard
+                          Token Standard
                         </Typography>
                         <Typography variant="body1">ERC721</Typography>
                       </Box>
@@ -199,7 +199,7 @@ const Lend = () => {
         })}
       </Grid>
       
-      {UserEthNFTs && <MyModal
+      {openModal && UserEthNFTs && <MyModal
         currentItemIndex={currentItemIndex}
         open={openModal}
         setOpen={setOpenModal}
