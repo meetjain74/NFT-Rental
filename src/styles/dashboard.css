@@ -1,0 +1,17 @@
+.dashboard-btn-div{
+    display: flex;
+    justify-content: center;
+
+    margin-top: 50px;
+}
+
+.type-btn, .active-type{
+    width: 200px;
+
+    text-transform: capitalize;
+}
+
+.active-type{
+    background-color: #d9136b !important;
+    color: white !important;
+}
