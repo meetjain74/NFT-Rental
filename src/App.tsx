@@ -12,7 +12,7 @@ import Rent from "./components/Rent/Rent";
 import type { FC } from "react";
 
 const { chains, provider } = configureChains(
-  [chain.polygon],
+  [chain.polygonMumbai],
   [publicProvider()]
 );
 
