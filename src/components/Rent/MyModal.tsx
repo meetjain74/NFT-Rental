@@ -59,6 +59,7 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex }) => {
   const handleClose = () => {
     setOpen(false);
   };
+
   const handelApproveClicked = async () => {
     const tx = await contract.functions["rentNft"](
       currentItemIndex,
@@ -73,9 +74,11 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex }) => {
 
     setTxHash(transactionHash);
   };
+
   const handelNumberOfDaysChanged = (event: any) => {
     setNumberOfDays(parseInt(event.target.value));
   };
+
   const item = RENT_CARDS[currentItemIndex];
   return (
     <Box>

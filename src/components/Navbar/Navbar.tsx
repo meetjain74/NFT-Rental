@@ -1,3 +1,5 @@
+// useAsync - https://usehooks.com/
+
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -9,6 +11,22 @@ import { useAccount, useConnect, useDisconnect, useContract, useSigner, useProvi
 import { contractAddress, contractAbi } from "../../constants/contract";
 import { getSignerAddress } from "../../utils";
 import { Contract } from "ethers";
+import { FiberNew } from "@mui/icons-material";
+
+// Call an async function using promise
+type PromiseFunction = () => Promise<any>;
+
+const callAsync = (fn: PromiseFunction) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        resolve(fn());
+      } catch (error) {
+        reject(error);
+      }
+    });
+  });
+}
 
 interface Props {
   marginTop: number;
@@ -40,8 +58,19 @@ const Navbar: React.FC<Props> = ({ marginTop }) => {
       // const tx = await contract.functions["addUser"](signer?.getAddress);
       // const receipt = await tx.wait();
       console.log("Connected to Metamask");
+
+      // Call the addUser functionality to add user, if not added.
+      const tx = callAsync(
+        () => contract.functions["addUser"](signer?.getAddress())
+      );
+
+      tx.then((_receipt: any) => {
+        console.log("User added");
+      }).catch((_err: any) => {
+        console.log("User already added");
+      });
     }
-  },[isConnected]);
+  },[isConnected, contract.functions, signer]);
 
 
   return (
