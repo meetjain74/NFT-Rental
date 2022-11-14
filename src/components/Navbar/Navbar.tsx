@@ -59,15 +59,33 @@ const Navbar: React.FC<Props> = ({ marginTop }) => {
       // const receipt = await tx.wait();
       console.log("Connected to Metamask");
 
-      // Call the addUser functionality to add user, if not added.
-      const tx = callAsync(
-        () => contract.functions["addUser"](signer?.getAddress())
+      let userExists = true;
+
+      const check = callAsync(
+        () => contract.functions["addressToUser"](signer?.getAddress())
       );
 
-      tx.then((_receipt: any) => {
-        console.log("User added");
+      check.then((_receipt: any) => {
+        if (_receipt.userAddress==="0x0000000000000000000000000000000000000000") {
+          userExists = false;
+          console.log("User do not exist yet");
+        }
+        console.log("User details: "+_receipt.userAddress);
+        
+        // Call the addUser functionality to add user, if not added
+        if (!userExists) {
+          const tx = callAsync(
+            () => contract.functions["addUser"](signer?.getAddress())
+          );
+
+          tx.then((_receipt: any) => {
+            console.log("User added");
+          }).catch((_err: any) => {
+            console.log("User already added"+_err);
+          });
+      }
       }).catch((_err: any) => {
-        console.log("User already added");
+        console.log("Error to fetch user details "+_err);
       });
     }
   },[isConnected, contract.functions, signer]);
