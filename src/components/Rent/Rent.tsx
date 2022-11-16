@@ -33,7 +33,7 @@ const Rent = () => {
 
   const contract = useContract({
     address: contractAddress,
-    abi: contractAbi.abi,
+    abi: contractAbi,
     signerOrProvider: signer || provider,
   }) as Contract;
 

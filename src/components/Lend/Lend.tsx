@@ -45,7 +45,6 @@ const Lend = () => {
     return await alchemy.nft.getNftsForOwner(address!);
   };
 
-
   useEffect(() => {
     getUserEthNFTs().then((nfts) => {
         setUserEthNFTs(nfts.ownedNfts);
@@ -97,7 +96,7 @@ const Lend = () => {
                         <TextField
                           id="standard-read-only-input"
                           label="Name"
-                          defaultValue={item.contract.name}
+                          defaultValue={item.rawMetadata.name}
                           InputProps={{
                             readOnly: true,
                           }}

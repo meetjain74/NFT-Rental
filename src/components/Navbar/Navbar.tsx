@@ -49,7 +49,7 @@ const Navbar: React.FC<Props> = ({ marginTop }) => {
 
   const contract = useContract({
     address: contractAddress,
-    abi: contractAbi.abi,
+    abi: contractAbi,
     signerOrProvider: signer || provider,
   }) as Contract;
 

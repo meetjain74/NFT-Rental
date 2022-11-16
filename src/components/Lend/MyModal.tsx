@@ -14,9 +14,9 @@ import {
 import React, { useState } from "react";
 import { styled } from "@mui/system";
 import { useContract, useSigner, useProvider } from "wagmi";
-import { contractAddress, contractAbi } from "../../constants/contract";
+import { contractAddress, contractAbi, ERC721ABI } from "../../constants/contract";
 import { getSignerAddress } from "../../utils";
-import { Contract } from "ethers";
+import { Contract,ethers } from "ethers";
 import defaultNft from "../../constants/defaultNft.jpg";
 
 interface Props {
@@ -44,11 +44,11 @@ const MyModal: React.FC<Props> = ({
 
   const contract = useContract({
     address: contractAddress,
-    abi: contractAbi.abi,
+    abi: contractAbi,
     signerOrProvider: signer || provider,
   }) as Contract;
 
-  console.log(userNFTs[currentItemIndex]);
+  //console.log(userNFTs[currentItemIndex]);
 
   // If signer doesnt exist, show error
   if (!signer) {
@@ -82,44 +82,46 @@ const MyModal: React.FC<Props> = ({
     console.log(collateral);
     console.log(dailyPrice);
 
+    const today = Math.trunc(Date.now()/1000);
+    const dueDate = today + numberOfDays*24*60*60;
+    console.log(today);
+    console.log(dueDate);
+
     const nft = userNFTs[currentItemIndex];
 
+    const nftAddress = nft.contract.address;
+    const nftId = nft.tokenId;
+    const nftKey = nftAddress+nftId;
+    const nftName = nft.rawMetadata.name;
+    const nftURL = nft.rawMetadata.image;
+    console.log(nftKey);
+
+    const nftOwner = signer?.getAddress();
+    console.log(nftOwner);
+
+    // Approve contract address first 
+    const nftContract = new ethers.Contract(nftAddress,ERC721ABI,signer);
+    const approveTx = await nftContract.approve(contractAddress,nftId);
+    await approveTx.wait();
+    await console.log(nftContract.getApproved(nftId));
+
+    // Add nft to lend
     const tx = await contract.functions["addNFTToLend"](
-      currentItemIndex,
-      /* owner */
-      nft.owner,
-      /* address */
-      nft.token_address,
-      /* id */
-      nft.token_id,
-      /* name */
-      nft.name,
-      /* image */
-      nft.metadata,
-      /* lender */
-      await getSignerAddress(signer),
-      /* due date */
-      Date.now() + numberOfDays * 24 * 60 * 60 * 1000,
-      /* daily rent */
+      nftKey,
+      nftOwner,
+      nftAddress,
+      nftId,
+      nftName,
+      nftURL,
+      nftOwner,
+      dueDate,
       dailyPrice,
-      /* collateral */
       collateral
     );
 
     const receipt = await tx.wait();
-
     const { transactionHash } = receipt;
-
-    setTxHash(transactionHash);
-
-    // Call approve
-    const tx2 = await contract.functions["approve"]();
-
-    const receipt2 = await tx2.wait();
-
-    const { transactionHash: txHash2 } = receipt2;
-
-    setTxHash(txHash2);
+    console.log(transactionHash);
   };
 
   const item = userNFTs[currentItemIndex];
@@ -158,14 +160,14 @@ const MyModal: React.FC<Props> = ({
                 <div style={{ marginTop: "1rem" }}></div>
                 <TextField
                   style={{ width: "20rem" }}
-                  label="Enter Collateral"
+                  label="Enter Collateral(in wei)"
                   variant="standard"
                   onChange={(e) => handleCollateralChanged(e)}
                 />
                 <div style={{ marginTop: "1rem" }}></div>
                 <TextField
                   style={{ width: "20rem" }}
-                  label="Enter Daily Price"
+                  label="Enter Daily Price(in wei)"
                   variant="standard"
                   onChange={(e) => handleDailyPriceChanged(e)}
                 />
@@ -206,7 +208,7 @@ const MyModal: React.FC<Props> = ({
                         variant="h5"
                         component="h2"
                       >
-                        {item.contract.name}
+                        {item.rawMetadata.name}
                       </Typography>
                     </CardContent>
                   </Card>

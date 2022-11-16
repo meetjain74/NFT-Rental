@@ -37,7 +37,7 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex }) => {
 
   const contract = useContract({
     address: contractAddress,
-    abi: contractAbi.abi,
+    abi: contractAbi,
     signerOrProvider: signer || provider,
   }) as Contract;
 
