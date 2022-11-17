@@ -18,6 +18,22 @@ import Navbar from "../Navbar/Navbar";
 import MyModal from "./MyModal";
 import Footer from "../LandingPage/Footer";
 import { Contract } from "ethers";
+import { LendedNFTDetails } from "./LendedNFTDetails";
+
+// Call an async function using promise
+type PromiseFunction = () => Promise<any>;
+
+const callAsync = (fn: PromiseFunction) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        resolve(fn());
+      } catch (error) {
+        reject(error);
+      }
+    });
+  });
+}
 
 const Rent = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -41,24 +57,73 @@ const Rent = () => {
   const [nftKeys, setNftKeys] = useState<string[]>([]);
   const [nftsData, setNftsData] = useState<any[]>([]);
 
-  const getNfts = async () => {
-    const nftKeys = await contract.functions["getNftKeysListAvaiableForRent"]();
-    setNftKeys(nftKeys);
-
-    // Fetch all NFTs from the mapping nftKeyToNftProps
-    const nftProps = await Promise.all(
-      nftKeys.map(async (nftKey: string) => {
-        const nftProps = await contract.nftKeyToNftProps(nftKey);
-        return nftProps;
-      })
+  const getLendNfts = async () => {
+    const list = callAsync(
+      () => contract.functions["getNftKeysListAvaiableForRent"]()
     );
 
-    setNftsData(nftProps);
+    let availableNFTs = new Array();
+
+    list.then((_receipt: any) => {
+      Promise.all(
+      _receipt.forEach((element:any) => {
+        console.log(element[0]);
+
+        let lendNft = new LendedNFTDetails();
+
+        const fetchNFT = callAsync(
+          () => contract.functions["nftKeyToNftProps"](element[0])
+        );
+
+        fetchNFT.then((_receipt: any) => {
+          lendNft.nftKey=_receipt.nftKey;
+          lendNft.nftOwner=_receipt.nftOwner;
+          lendNft.nftAddress=_receipt.nftAddress;
+          lendNft.nftId=_receipt.nftId;
+          lendNft.nftName=_receipt.nftName;
+          lendNft.nftImageURL=_receipt.nftImageURL;
+        }).catch((_err: any) => {
+          console.log("Fetch error"+_err);
+        });
+
+        const fetchLend = callAsync(
+          () => contract.functions["nftKeyToLendedNftDetails"](element[0])
+        );
+
+        fetchLend.then((_receipt: any) => {
+          lendNft.lenderAddress=_receipt.lenderAddress;
+          lendNft.borrowerAddress=_receipt.borrowerAddress;
+          lendNft.dueDate=_receipt.dueDate;
+          lendNft.dailyRent=_receipt.dailyRent;
+          lendNft.collateral=_receipt.collateral;
+          console.log(lendNft);
+          availableNFTs.push(lendNft);
+        }).catch((_err: any) => {
+          console.log("Fetch error"+_err);
+        });
+
+        console.log(lendNft);
+      })).then(() => {
+        console.log("ddwedewfwsdvhsved");
+        console.log(availableNFTs);
+        setNftsData(availableNFTs)
+      });
+      //console.log(availableNFTs);
+      //setNftsData(availableNFTs);
+    }).catch((_err: any) => {
+      console.log("Error "+_err);
+    });
+
+    return availableNFTs;
   };
 
   useEffect(() => {
-    getNfts();
-  });
+    //getLendNfts();
+    // getLendNfts().then((nfts)=>{
+    //   setNftsData(nfts);
+    // })
+    console.log("STATE CHANGED");
+  },[]);
 
   return (
     <>
@@ -85,7 +150,12 @@ const Rent = () => {
           alignItems: "center",
         }}
       >
-        {nftsData.map((item: any, index: number) => {
+        {console.log("fefew")}
+        {console.log(nftsData.length)}
+        {console.log(nftsData)}
+        {nftsData.map((item: any,index: number) => {
+          console.log("dcsd");
+          console.log(nftsData);
           return (
             <Grid
               sx={{ alignItems: "center", justifyContent: "center" }}

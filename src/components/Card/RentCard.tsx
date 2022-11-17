@@ -15,10 +15,9 @@ import { Box, styled } from "@mui/system";
 const RentCard= (props: any): JSX.Element =>{
     const [openModal, setOpenModal] = useState(false);
     const [currentItemIndex, setCurrentItemIndex] = useState(0);
-    const handleRentNowClicked = (index: number) => {
-        setOpenModal(true);
-        setCurrentItemIndex(index);
-    };
+    function handleRentNowClicked(){
+        console.log("RENT CLICKED!");
+    }
 
     return (
         <Card
@@ -215,7 +214,7 @@ const RentCard= (props: any): JSX.Element =>{
                 </svg>
                 </div>
                 <StyledRentButton
-                // onClick={() => handleRentNowClicked(index)}
+                onClick={handleRentNowClicked}
                 style={{ marginTop: "-0.2rem" }}
                 >
                 <Typography variant="h6">Rent Now</Typography>

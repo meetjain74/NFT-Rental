@@ -55,8 +55,6 @@ const Navbar: React.FC<Props> = ({ marginTop }) => {
 
   useEffect(() => {
     if (isConnected) {
-      // const tx = await contract.functions["addUser"](signer?.getAddress);
-      // const receipt = await tx.wait();
       console.log("Connected to Metamask");
 
       let userExists = true;

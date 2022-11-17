@@ -199,7 +199,7 @@ const MyModal: React.FC<Props> = ({
                         width: "15rem",
                       }}
                       component="img"
-                      image={item.rawMetadata.image!=undefined ? item.rawMetadata.image : defaultNft}
+                      image={item.rawMetadata.image!=undefined ? "https://gateway.ipfscdn.io/ipfs/"+(item.rawMetadata.image).slice(5) : defaultNft}
                       alt={item.contract.name}
                     />
                     <CardContent>

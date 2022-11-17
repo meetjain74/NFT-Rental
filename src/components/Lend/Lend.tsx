@@ -77,7 +77,7 @@ const Lend = () => {
               key={index}
             >
               <Card
-                sx={{ maxWidth: 345, minHeight: 500, margin: "1rem 1.5rem" }}
+                sx={{ maxWidth: 345, minHeight: 300, margin: "1rem 1.5rem" }}
               >
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
                   <Box sx={{ display: "flex" }}>
@@ -88,7 +88,7 @@ const Lend = () => {
                         flex: "1",
                       }}
                       component="img"
-                      image={item.rawMetadata.image!=undefined ? item.rawMetadata.image : defaultNft}
+                      image={item.rawMetadata.image!=undefined ? "https://gateway.ipfscdn.io/ipfs/"+(item.rawMetadata.image).slice(5) : defaultNft}
                       alt={item.contract.name}
                     />
                     <Box sx={{ display: "flex", flexDirection: "column" }}>

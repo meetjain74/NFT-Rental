@@ -15,9 +15,11 @@ import { Box, styled } from "@mui/system";
 const LendCard= (props: any): JSX.Element =>{
     const [openModal, setOpenModal] = useState(false);
     const [currentItemIndex, setCurrentItemIndex] = useState(0);
-    const handleRentNowClicked = (index: number) => {
-        setOpenModal(true);
-        setCurrentItemIndex(index);
+    function handleStopLendClicked() {
+        console.log("Stop Lend CLicked!");
+    };
+    function handleClaimCollateralClicked() {
+        console.log("Claim Collateral CLicked!");
     };
 
     return (
@@ -215,12 +217,14 @@ const LendCard= (props: any): JSX.Element =>{
                 </svg>
                 </div> */}
                 <StyledRentButton
+                onClick={handleStopLendClicked}
                 style={{ marginTop: "-0.2rem" }}
                 >
                 <Typography>Stop Lend</Typography>
                 </StyledRentButton>
 
                 <StyledRentButton
+                onClick = {handleClaimCollateralClicked}
                 style={{ marginTop: "-0.2rem" }}
                 >
                 <Typography>Claim Collateral</Typography>
