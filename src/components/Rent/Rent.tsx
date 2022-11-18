@@ -99,40 +99,14 @@ const Rent = () => {
   // Get all NFTs available for rent
   const [nftsData, setNftsData] = useState<any[]>([]);
 
-  // const getLendNfts = async () => {
-  //   const fetch = callAsync(
-  //     () => FetchNfts(contract)
-  //   );
-  //   fetch.then((_receipt: any) => {
-  //     setNftsData(_receipt);
-  //     console.log(_receipt);
-  //   });
-  // };
-
   useEffect(() => {
-    //getLendNfts();
-    // getLendNfts().then((nfts)=>{
-    //   setNftsData(nfts);
-    // })
-    // const fetch = callAsync(
-    //   () => FetchNfts(contract)
-    // );
-    // fetch.then((_receipt: any) => {
-    //   setNftsData(_receipt);
-    //   console.log(_receipt);
-    // });
     FetchNfts(contract).then((nfts)=>{
       console.log(nfts);
-      setNftsData(nfts);
-      function sleep (time) {
-        return new Promise((resolve) => setTimeout(resolve, time));
-      }
-      
-      // Usage!
-      sleep(500).then(() => {
-          // Do something after the sleep!
-      });
-    
+      setTimeout(function(){
+        setNftsData(nfts);
+        console.log(nftsData.length);
+      }, 3000);
+      // setNftsData(nfts);  
       console.log(nftsData);
     });
   },[address]);
@@ -165,10 +139,16 @@ const Rent = () => {
         {console.log("fefew")}
         {console.log("The length: " + nftsData.length)}
         {console.log(typeof nftsData)}
+        {console.log(Array.isArray(nftsData))}
+        {console.log(nftsData)}
+        {nftsData.forEach((item:any) => {
+          console.log("Item");
+          console.log(item);
+        })}
         {nftsData.map((item: any,index: number) => {
           console.log("dcsd");
           console.log(item);
-          console.log(nftsData);
+          console.log(item.nftName);
           return (
             <Grid
               sx={{ alignItems: "center", justifyContent: "center" }}
@@ -223,6 +203,7 @@ const Rent = () => {
                       </CardContent>
                     </Box>
                   </Box>
+                  
                   <Box sx={{ display: "flex", flexDirection: "column" }}>
                     <CardContent>
                       <Box
@@ -235,9 +216,11 @@ const Rent = () => {
                           sx={{ fontWeight: "bold", color: "#6D676E" }}
                           variant="body1"
                         >
-                          NFT Price
+                          NFT Owner
                         </Typography>
-                        <Typography variant="body1">{item.nftPrice}</Typography>
+                        <Typography variant="body1">
+                          {item.nftOwner.slice(0,5)+"......" +item.nftOwner.slice(-5)}
+                        </Typography>
                       </Box>
                     </CardContent>
                     <Divider
@@ -261,7 +244,7 @@ const Rent = () => {
                           Daily Rent
                         </Typography>
                         <Typography variant="body1">
-                          {item.dailyRent}
+                          {item.dailyRent.toString()}
                         </Typography>
                       </Box>
                     </CardContent>
@@ -286,7 +269,7 @@ const Rent = () => {
                           Collateral
                         </Typography>
                         <Typography variant="body1">
-                          {item.collateral}
+                          {item.collateral.toString()}
                         </Typography>
                       </Box>
                     </CardContent>
@@ -311,7 +294,7 @@ const Rent = () => {
                           Maximum Duration (Days)
                         </Typography>
                         <Typography variant="body1">
-                          {item.maximumDuration}
+                          {item.dueDate}
                         </Typography>
                       </Box>
                     </CardContent>
@@ -335,7 +318,7 @@ const Rent = () => {
                         >
                           Standard
                         </Typography>
-                        <Typography variant="body1">{item.standard}</Typography>
+                        <Typography variant="body1">ERC721</Typography>
                       </Box>
                     </CardContent>
                     <Divider

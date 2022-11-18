@@ -8,12 +8,13 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import LandingPage from "./components/LandingPage/LandingPage";
 import Lend from "./components/Lend/Lend";
 import Rent from "./components/Rent/Rent";
+import { alchemyProvider } from 'wagmi/providers/alchemy'
 
 import type { FC } from "react";
 
 const { chains, provider } = configureChains(
   [chain.polygonMumbai],
-  [publicProvider()]
+  [publicProvider(),alchemyProvider({ apiKey: 'gbH4akq-xjxSNOvPQ0vlliyvu7xi2qo0' })],
 );
 
 const client = createClient({

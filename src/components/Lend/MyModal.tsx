@@ -48,8 +48,6 @@ const MyModal: React.FC<Props> = ({
     signerOrProvider: signer || provider,
   }) as Contract;
 
-  //console.log(userNFTs[currentItemIndex]);
-
   // If signer doesnt exist, show error
   if (!signer) {
     return (
@@ -93,7 +91,7 @@ const MyModal: React.FC<Props> = ({
     const nftId = nft.tokenId;
     const nftKey = nftAddress+nftId;
     const nftName = nft.rawMetadata.name;
-    const nftURL = nft.rawMetadata.image;
+    const nftURL = "https://gateway.ipfscdn.io/ipfs/"+(nft.rawMetadata.image).slice(5);
     console.log(nftKey);
 
     const nftOwner = signer?.getAddress();
