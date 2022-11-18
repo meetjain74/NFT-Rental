@@ -104,9 +104,7 @@ const Rent = () => {
       console.log(nfts);
       setTimeout(function(){
         setNftsData(nfts);
-        console.log(nftsData.length);
       }, 3000);
-      // setNftsData(nfts);  
       console.log(nftsData);
     });
   },[address]);
@@ -136,19 +134,7 @@ const Rent = () => {
           alignItems: "center",
         }}
       >
-        {console.log("fefew")}
-        {console.log("The length: " + nftsData.length)}
-        {console.log(typeof nftsData)}
-        {console.log(Array.isArray(nftsData))}
-        {console.log(nftsData)}
-        {nftsData.forEach((item:any) => {
-          console.log("Item");
-          console.log(item);
-        })}
         {nftsData.map((item: any,index: number) => {
-          console.log("dcsd");
-          console.log(item);
-          console.log(item.nftName);
           return (
             <Grid
               sx={{ alignItems: "center", justifyContent: "center" }}
@@ -194,7 +180,7 @@ const Rent = () => {
                           sx={{ marginTop: "0.5rem" }}
                           id="standard-read-only-input"
                           label="Token Address"
-                          defaultValue={item.nftAddress}
+                          defaultValue={item.nftAddress.slice(0,5)+"...." +item.nftAddress.slice(-5)}
                           InputProps={{
                             readOnly: true,
                           }}
@@ -366,7 +352,7 @@ const Rent = () => {
         })}
       </Grid>
       <Footer />
-      {nftsData && <MyModal
+      {openModal && nftsData && <MyModal
         currentItemIndex={currentItemIndex}
         open={openModal}
         setOpen={setOpenModal}

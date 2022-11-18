@@ -115,7 +115,7 @@ const Lend = () => {
                           sx={{ marginTop: "0.5rem" }}
                           id="standard-read-only-input"
                           label="Token Address"
-                          defaultValue={item.contract.address}
+                          defaultValue={item.contract.address.slice(0,5)+"....." +item.contract.address.slice(-5)}
                           InputProps={{
                             readOnly: true,
                           }}
