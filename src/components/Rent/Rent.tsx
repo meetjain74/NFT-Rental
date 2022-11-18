@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Box, styled } from "@mui/system";
-import { useContract, useSigner, useProvider } from "wagmi";
+import { useContract, useSigner, useProvider, useAccount } from "wagmi";
 
 import { contractAddress, contractAbi } from "../../constants/contract";
 import Navbar from "../Navbar/Navbar";
@@ -35,6 +35,47 @@ const callAsync = (fn: PromiseFunction) => {
   });
 }
 
+const FetchLendNftDetails = async(element: string,contract: any) => {
+  let lendNft = new LendedNFTDetails();
+  const receipt = await contract.functions["nftKeyToNftProps"](element);
+  lendNft.nftKey= await receipt.nftKey;
+  lendNft.nftOwner=await receipt.nftOwner;
+  lendNft.nftAddress=await receipt.nftAddress;
+  lendNft.nftId=await receipt.nftId;
+  lendNft.nftName=await receipt.nftName;
+  lendNft.nftImageURL=await receipt.nftImageURL;
+
+  const _receipt = await contract.functions["nftKeyToLendedNftDetails"](element);
+  lendNft.lenderAddress=await _receipt.lenderAddress;
+  lendNft.borrowerAddress=await _receipt.borrowerAddress;
+  lendNft.dueDate=await _receipt.dueDate;
+  lendNft.dailyRent=await _receipt.dailyRent;
+  lendNft.collateral=await _receipt.collateral;
+
+  await console.log(lendNft);
+  return await lendNft;
+}
+
+const FetchNfts = async(contract:any) => {
+  const keys = await contract.functions["getNftKeysListAvaiableForRent"]();
+  await console.log(keys);
+  let availableNFTs = new Array<LendedNFTDetails>();
+  Promise.all(keys.map((element:any) => {
+    console.log(element[0]);
+    const lendNft = callAsync(
+      () => FetchLendNftDetails(element[0],contract)
+    );
+    lendNft.then((_receipt:any) => {
+      availableNFTs.push(_receipt);
+    })
+  })).then(() => {
+    console.log("All nft details fetched- ")
+    console.log(availableNFTs);
+  })
+
+  return await availableNFTs;
+}
+
 const Rent = () => {
   const [openModal, setOpenModal] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
@@ -47,6 +88,8 @@ const Rent = () => {
   const { data: signer } = useSigner();
   const provider = useProvider();
 
+  const { address } = useAccount();
+
   const contract = useContract({
     address: contractAddress,
     abi: contractAbi,
@@ -54,67 +97,16 @@ const Rent = () => {
   }) as Contract;
 
   // Get all NFTs available for rent
-  const [nftKeys, setNftKeys] = useState<string[]>([]);
   const [nftsData, setNftsData] = useState<any[]>([]);
 
   const getLendNfts = async () => {
-    const list = callAsync(
-      () => contract.functions["getNftKeysListAvaiableForRent"]()
+    const fetch = callAsync(
+      () => FetchNfts(contract)
     );
-
-    let availableNFTs = new Array();
-
-    list.then((_receipt: any) => {
-      Promise.all(
-      _receipt.forEach((element:any) => {
-        console.log(element[0]);
-
-        let lendNft = new LendedNFTDetails();
-
-        const fetchNFT = callAsync(
-          () => contract.functions["nftKeyToNftProps"](element[0])
-        );
-
-        fetchNFT.then((_receipt: any) => {
-          lendNft.nftKey=_receipt.nftKey;
-          lendNft.nftOwner=_receipt.nftOwner;
-          lendNft.nftAddress=_receipt.nftAddress;
-          lendNft.nftId=_receipt.nftId;
-          lendNft.nftName=_receipt.nftName;
-          lendNft.nftImageURL=_receipt.nftImageURL;
-        }).catch((_err: any) => {
-          console.log("Fetch error"+_err);
-        });
-
-        const fetchLend = callAsync(
-          () => contract.functions["nftKeyToLendedNftDetails"](element[0])
-        );
-
-        fetchLend.then((_receipt: any) => {
-          lendNft.lenderAddress=_receipt.lenderAddress;
-          lendNft.borrowerAddress=_receipt.borrowerAddress;
-          lendNft.dueDate=_receipt.dueDate;
-          lendNft.dailyRent=_receipt.dailyRent;
-          lendNft.collateral=_receipt.collateral;
-          console.log(lendNft);
-          availableNFTs.push(lendNft);
-        }).catch((_err: any) => {
-          console.log("Fetch error"+_err);
-        });
-
-        console.log(lendNft);
-      })).then(() => {
-        console.log("ddwedewfwsdvhsved");
-        console.log(availableNFTs);
-        setNftsData(availableNFTs)
-      });
-      //console.log(availableNFTs);
-      //setNftsData(availableNFTs);
-    }).catch((_err: any) => {
-      console.log("Error "+_err);
+    fetch.then((_receipt: any) => {
+      setNftsData(_receipt);
+      console.log(_receipt);
     });
-
-    return availableNFTs;
   };
 
   useEffect(() => {
@@ -122,8 +114,19 @@ const Rent = () => {
     // getLendNfts().then((nfts)=>{
     //   setNftsData(nfts);
     // })
-    console.log("STATE CHANGED");
-  },[]);
+    // const fetch = callAsync(
+    //   () => FetchNfts(contract)
+    // );
+    // fetch.then((_receipt: any) => {
+    //   setNftsData(_receipt);
+    //   console.log(_receipt);
+    // });
+    FetchNfts(contract).then((nfts)=>{
+      console.log(nfts);
+      setNftsData(nfts);
+      console.log(nftsData);
+    });
+  },[address]);
 
   return (
     <>
@@ -151,10 +154,11 @@ const Rent = () => {
         }}
       >
         {console.log("fefew")}
-        {console.log(nftsData.length)}
-        {console.log(nftsData)}
+        {console.log("The length: " + nftsData.length)}
+        {console.log(typeof nftsData)}
         {nftsData.map((item: any,index: number) => {
           console.log("dcsd");
+          console.log(item);
           console.log(nftsData);
           return (
             <Grid
@@ -370,11 +374,11 @@ const Rent = () => {
         })}
       </Grid>
       <Footer />
-      <MyModal
+      {nftsData && <MyModal
         currentItemIndex={currentItemIndex}
         open={openModal}
         setOpen={setOpenModal}
-      />
+      />}
     </>
   );
 };

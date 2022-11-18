@@ -37,8 +37,7 @@ const Lend = () => {
   const { address } = useAccount();
 
   // Execute getUserEthNFTs and get the NFTs
-  const [UserEthNFTs, setUserEthNFTs] = useState<any[]>([])
-
+  const [UserEthNFTs, setUserEthNFTs] = useState<any[]>([]);
 
   const getUserEthNFTs = async () => {
     console.log(address!);
