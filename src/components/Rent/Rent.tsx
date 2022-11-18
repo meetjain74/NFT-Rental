@@ -356,6 +356,7 @@ const Rent = () => {
         currentItemIndex={currentItemIndex}
         open={openModal}
         setOpen={setOpenModal}
+        nftDetails={nftsData[currentItemIndex]}
       />}
     </>
   );

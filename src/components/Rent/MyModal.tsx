@@ -20,14 +20,16 @@ import { useContract, useSigner, useProvider } from "wagmi";
 
 import { contractAddress, contractAbi } from "../../constants/contract";
 import { Contract } from "ethers";
+import { LendedNFTDetails } from "./LendedNFTDetails";
 
 interface Props {
   currentItemIndex: number;
   open: boolean;
   setOpen(open: boolean): void;
+  nftDetails: LendedNFTDetails
 }
 
-const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex }) => {
+const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex, nftDetails, }) => {
   const [numberOfDays, setNumberOfDays] = useState(-1);
   const [txHash, setTxHash] = useState("");
 
@@ -52,6 +54,8 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex }) => {
     );
   }
 
+  console.log(nftDetails);
+
   // useEffect(() => {
   //   console.log(numberOfDays);
   // }, [numberOfDays]);
@@ -60,7 +64,7 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex }) => {
     setOpen(false);
   };
 
-  const handelApproveClicked = async () => {
+  const handleApproveClicked = async () => {
     const tx = await contract.functions["rentNft"](
       currentItemIndex,
       await signer.getAddress(),
@@ -75,7 +79,7 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex }) => {
     setTxHash(transactionHash);
   };
 
-  const handelNumberOfDaysChanged = (event: any) => {
+  const handleNumberOfDaysChanged = (event: any) => {
     setNumberOfDays(parseInt(event.target.value));
   };
 
@@ -109,7 +113,7 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex }) => {
                   style={{ width: "20rem" }}
                   label="Enter Duration in days(max of 100 days)"
                   variant="standard"
-                  onChange={(e) => handelNumberOfDaysChanged(e)}
+                  onChange={(e) => handleNumberOfDaysChanged(e)}
                 />
                 <div style={{ marginTop: "3rem" }}></div>
                 <Typography variant="body2">
@@ -132,7 +136,7 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex }) => {
                   </Typography>
                 </Box>
                 <StyledButton
-                  onClick={handelApproveClicked}
+                  onClick={handleApproveClicked}
                   variant="contained"
                 >
                   Approve
