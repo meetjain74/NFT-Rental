@@ -99,15 +99,15 @@ const Rent = () => {
   // Get all NFTs available for rent
   const [nftsData, setNftsData] = useState<any[]>([]);
 
-  const getLendNfts = async () => {
-    const fetch = callAsync(
-      () => FetchNfts(contract)
-    );
-    fetch.then((_receipt: any) => {
-      setNftsData(_receipt);
-      console.log(_receipt);
-    });
-  };
+  // const getLendNfts = async () => {
+  //   const fetch = callAsync(
+  //     () => FetchNfts(contract)
+  //   );
+  //   fetch.then((_receipt: any) => {
+  //     setNftsData(_receipt);
+  //     console.log(_receipt);
+  //   });
+  // };
 
   useEffect(() => {
     //getLendNfts();
@@ -124,6 +124,15 @@ const Rent = () => {
     FetchNfts(contract).then((nfts)=>{
       console.log(nfts);
       setNftsData(nfts);
+      function sleep (time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+      }
+      
+      // Usage!
+      sleep(500).then(() => {
+          // Do something after the sleep!
+      });
+    
       console.log(nftsData);
     });
   },[address]);
