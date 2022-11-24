@@ -19,6 +19,7 @@ import MyModal from "./MyModal";
 import Footer from "../LandingPage/Footer";
 import { Contract } from "ethers";
 import { LendedNFTDetails } from "./LendedNFTDetails";
+import { BigNumber } from "bignumber.js";
 
 // Call an async function using promise
 type PromiseFunction = () => Promise<any>;
@@ -60,10 +61,10 @@ const FetchNfts = async(contract:any) => {
   const keys = await contract.functions["getNftKeysListAvaiableForRent"]();
   await console.log(keys);
   let availableNFTs = new Array<LendedNFTDetails>();
-  Promise.all(keys.map((element:any) => {
+  Promise.all(keys[0].map((element:any) => {
     console.log(element[0]);
     const lendNft = callAsync(
-      () => FetchLendNftDetails(element[0],contract)
+      () => FetchLendNftDetails(element,contract)
     );
     lendNft.then((_receipt:any) => {
       availableNFTs.push(_receipt);
@@ -135,6 +136,8 @@ const Rent = () => {
         }}
       >
         {nftsData.map((item: any,index: number) => {
+          const today = Math.trunc(Date.now()/1000);
+          const duration = Math.floor((item.dueDate-today)/(60*60*24));
           return (
             <Grid
               sx={{ alignItems: "center", justifyContent: "center" }}
@@ -230,7 +233,7 @@ const Rent = () => {
                           Daily Rent
                         </Typography>
                         <Typography variant="body1">
-                          {item.dailyRent.toString()}
+                          {item.dailyRent.div(1000000000).toString()+" Gwei"}
                         </Typography>
                       </Box>
                     </CardContent>
@@ -255,7 +258,7 @@ const Rent = () => {
                           Collateral
                         </Typography>
                         <Typography variant="body1">
-                          {item.collateral.toString()}
+                          {item.collateral.div(1000000000).toString()+" Gwei"}
                         </Typography>
                       </Box>
                     </CardContent>
@@ -280,7 +283,7 @@ const Rent = () => {
                           Maximum Duration (Days)
                         </Typography>
                         <Typography variant="body1">
-                          {item.dueDate}
+                          {duration+" days"}
                         </Typography>
                       </Box>
                     </CardContent>

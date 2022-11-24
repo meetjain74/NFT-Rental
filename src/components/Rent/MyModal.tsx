@@ -21,6 +21,7 @@ import { useContract, useSigner, useProvider } from "wagmi";
 import { contractAddress, contractAbi } from "../../constants/contract";
 import { Contract } from "ethers";
 import { LendedNFTDetails } from "./LendedNFTDetails";
+import { ethers } from "ethers"
 
 interface Props {
   currentItemIndex: number;
@@ -29,8 +30,8 @@ interface Props {
   nftDetails: LendedNFTDetails
 }
 
-const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex, nftDetails, }) => {
-  const [numberOfDays, setNumberOfDays] = useState(-1);
+const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex, nftDetails,}) => {
+  const [numberOfDays, setNumberOfDays] = useState(0);
   const [txHash, setTxHash] = useState("");
 
   // Contract
@@ -53,37 +54,43 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex, nftDetails,
       </>
     );
   }
-
-  console.log(nftDetails);
-
-  // useEffect(() => {
-  //   console.log(numberOfDays);
-  // }, [numberOfDays]);
+  
+  const today = Math.trunc(Date.now()/1000);
+  const duration = Math.floor((nftDetails.dueDate-today)/(60*60*24));
 
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleApproveClicked = async () => {
+    if (numberOfDays===0) {
+      alert("Can't rent for 0 days");
+      return;
+    }
+
+    console.log("My address - "+signer.getAddress());
+    const payment = nftDetails.collateral.add(nftDetails.dailyRent.mul(numberOfDays));
+    console.log(payment);
     const tx = await contract.functions["rentNft"](
-      currentItemIndex,
+      nftDetails.nftKey,
       await signer.getAddress(),
       numberOfDays,
-      Math.floor(Date.now() / 1000)
+      Math.trunc(Date.now()/1000),
+      {value: payment}
     );
 
     const receipt = await tx.wait();
-
     const { transactionHash } = receipt;
-
     setTxHash(transactionHash);
   };
 
   const handleNumberOfDaysChanged = (event: any) => {
-    setNumberOfDays(parseInt(event.target.value));
+    if (event.target.value==="")
+      setNumberOfDays(0);
+    else
+      setNumberOfDays(parseInt(event.target.value));
   };
 
-  const item = RENT_CARDS[currentItemIndex];
   return (
     <Box>
       <Modal
@@ -117,16 +124,16 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex, nftDetails,
                 />
                 <div style={{ marginTop: "3rem" }}></div>
                 <Typography variant="body2">
-                  Rent Price ..................................1
+                  {"Days Avaiable .............................."+duration+" days"}
                 </Typography>
                 <Typography variant="body2">
-                  Daily Rent Price[WETH] ..................................0.01
+                  {"Daily Rent Price ..............................."+nftDetails.dailyRent.div(1000000000).toString()+" Gwei"}
                 </Typography>
                 <Typography variant="body2">
-                  Collateral[WETH] ..................................0.5
+                  {"Collateral ..................................."+nftDetails.collateral.div(1000000000).toString()+" Gwei"}
                 </Typography>
                 <Typography variant="body2">
-                  Rent (total)..................................2.0
+                  {"Total Rent ...................................."+nftDetails.dailyRent.div(1000000000).mul(numberOfDays).toString()+" Gwei"}
                 </Typography>
                 <div style={{ marginTop: "1rem" }}></div>
                 <Box marginLeft="-0.75rem" display="flex" flexDirection="row">
@@ -162,8 +169,8 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex, nftDetails,
                         width: "15rem",
                       }}
                       component="img"
-                      image={require("../../assets/" + item.imageName)}
-                      alt={item.imageName}
+                      image={nftDetails.nftImageURL}
+                      alt={nftDetails.nftName}
                     />
                     <CardContent>
                       <Typography
@@ -171,7 +178,7 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex, nftDetails,
                         variant="h5"
                         component="h2"
                       >
-                        {item.name}
+                        {nftDetails.nftName}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -183,7 +190,7 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex, nftDetails,
                   >
                     Token ID
                   </Typography>
-                  <Typography variant="body1">{item.tokenID}</Typography>
+                  <Typography variant="body1">{nftDetails.nftId.toString()}</Typography>
                 </Box>
                 <Divider sx={{ marginBottom: "0.6rem" }} />
                 <Box width="100%" display="flex" justifyContent="space-between">
@@ -194,9 +201,9 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex, nftDetails,
                     Address
                   </Typography>
                   <Typography variant="body2">
-                    {item.tokenAddress.slice(0, 5) +
+                    {nftDetails.nftAddress.slice(0, 5) +
                       "......" +
-                      item.tokenAddress.slice(-5)}
+                      nftDetails.nftAddress.slice(-5)}
                   </Typography>
                 </Box>
                 <Divider sx={{ marginBottom: "0.6rem" }} />
@@ -207,7 +214,7 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex, nftDetails,
                   >
                     Token Standard
                   </Typography>
-                  <Typography variant="body2">{item.standard}</Typography>
+                  <Typography variant="body2">ERC721</Typography>
                 </Box>
                 <Divider sx={{ marginBottom: "0.6rem" }} />
               </Box>

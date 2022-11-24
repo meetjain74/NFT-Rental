@@ -138,7 +138,7 @@ const Lend = () => {
                         >
                           Token Standard
                         </Typography>
-                        <Typography variant="body1">ERC721</Typography>
+                        <Typography variant="body1">{item.tokenType}</Typography>
                       </Box>
                     </CardContent>
                     <Divider

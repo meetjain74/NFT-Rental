@@ -242,7 +242,7 @@ const MyModal: React.FC<Props> = ({
                   >
                     Token Standard
                   </Typography>
-                  <Typography variant="body2">ERC721</Typography>
+                  <Typography variant="body2">{item.tokenType}</Typography>
                 </Box>
                 <Divider sx={{ marginBottom: "0.6rem" }} />
               </Box>
