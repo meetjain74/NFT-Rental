@@ -54,7 +54,7 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex, nftDetails,
       </>
     );
   }
-  
+
   const today = Math.trunc(Date.now()/1000);
   const duration = Math.floor((nftDetails.dueDate-today)/(60*60*24));
 
@@ -77,11 +77,14 @@ const MyModal: React.FC<Props> = ({ open, setOpen, currentItemIndex, nftDetails,
       numberOfDays,
       Math.trunc(Date.now()/1000),
       {value: payment}
-    );
-
-    const receipt = await tx.wait();
-    const { transactionHash } = receipt;
-    setTxHash(transactionHash);
+    ).then((result)=> {
+      console.log(result.hash);
+      const { transactionHash } = result.hash;
+      setTxHash(transactionHash);
+    }).catch((error) => {
+      console.log(error.reason);
+      alert(error.reason);
+    });
   };
 
   const handleNumberOfDaysChanged = (event: any) => {
