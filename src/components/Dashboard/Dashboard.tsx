@@ -1,14 +1,63 @@
 import { Box, Button, Grid } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../../styles/dashboard.css"
 import RentCard from "../Card/RentCard";
 import LendCard from "../Card/LendCard";
 
 import Navbar from "../Navbar/Navbar";
 
+import { useContract, useSigner, useProvider, useAccount } from "wagmi";
+import { contractAddress, contractAbi } from "../../constants/contract";
+import { Contract } from "ethers";
+
+// Call an async function using promise
+type PromiseFunction = () => Promise<any>;
+
+const callAsync = (fn: PromiseFunction) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        resolve(fn());
+      } catch (error) {
+        reject(error);
+      }
+    });
+  });
+}
+
+const FetchUserRentedNFTs = async(contract:any,address:any) => {
+  const user = await contract.functions["addressToUser"](address);
+  console.log(user.userRentedNftsList);
+}
+
 const Dashboard = () => {
   const [type, setType] = useState<String>("rent");
-  const nftdata = require("../../constants/DefaultData.ts")['LEND_CARDS'];
+  const nftsData = require("../../constants/DefaultData.ts")['LEND_CARDS'];
+
+  // Get all NFTs available for rent
+  //const [nftsData, setNftsData] = useState<any[]>([]);
+
+  // Contract
+  const { data: signer } = useSigner();
+  const provider = useProvider();
+
+  const { address } = useAccount();
+
+  const contract = useContract({
+    address: contractAddress,
+    abi: contractAbi,
+    signerOrProvider: signer || provider,
+  }) as Contract;
+
+  useEffect(() => {
+    // FetchUserRentedNFTs(contract,address).then((nfts)=>{
+    //   console.log(nfts);
+    //   // setTimeout(function(){
+    //   //   setNftsData(nfts);
+    //   // }, 3000);
+    //   // console.log(nftsData);
+    // });
+  },[signer]);
 
   return (
     <>
@@ -30,32 +79,31 @@ const Dashboard = () => {
         }}
       >
         {
-        nftdata.map((item:any, index:number)=>{        
+        nftsData.map((item:any, index:number)=>{        
         return type==="rent"?
           <RentCard nftName={item.name}
-            nftId={item.tokenId}
+            nftId={item.tokenID}
             nftAddress={item.tokenAddress}
             imageName={item.imageName}
-            nftPrice={item.nftPrice}
-            dailyRent={"0.01"}
-            collateral={"0.01"}
-            maximumDuration={"20"}
-            nftImageURL = {"featuredNFT1.png"}
-            standard={"ERC721"} />:
-          <LendCard nftName={"Liquid Hand 101"}
-            nftId={"123456789"}
-            nftAddress={"0x0000000000000000000000000000000000000000"}
-            imageName={"featuredNFT1.png"}
-            nftPrice={"2.36"}
-            dailyRent={"0.01"}
-            collateral={"0.01"}
-            maximumDuration={"20"}
-            nftImageURL = {"featuredNFT1.png"}
-            standard={"ERC721"} />})
+            nftOwner={item.nftOwner}
+            dailyRent={item.dailyRent}
+            collateral={item.collateral}
+            maximumDuration={item.maximumDuration}
+            nftImageURL = {item.nftImageURL}
+            standard={item.standard} />:
+          <LendCard nftName={item.name}
+            nftId={item.tokenID}
+            nftAddress={item.tokenAddress}
+            imageName={item.imageName}
+            nftOwner={item.nftOwner}
+            dailyRent={item.dailyRent}
+            collateral={item.collateral}
+            maximumDuration={item.maximumDuration}
+            nftImageURL = {item.nftImageURL}
+            standard={item.standard} />
+            })
         }
-      </Grid>
-
-        
+      </Grid>  
       
     </>
   );

@@ -19,7 +19,6 @@ import MyModal from "./MyModal";
 import Footer from "../LandingPage/Footer";
 import { Contract } from "ethers";
 import { LendedNFTDetails } from "./LendedNFTDetails";
-import { BigNumber } from "bignumber.js";
 
 // Call an async function using promise
 type PromiseFunction = () => Promise<any>;

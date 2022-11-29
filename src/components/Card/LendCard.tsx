@@ -62,7 +62,7 @@ const LendCard= (props: any): JSX.Element =>{
                     sx={{ marginTop: "0.5rem" }}
                     id="standard-read-only-input"
                     label="Token Address"
-                    defaultValue={props.nftAddress}
+                    defaultValue={props.nftAddress.slice(0,5)+"...." +props.nftAddress.slice(-5)}
                     InputProps={{
                     readOnly: true,
                     }}
@@ -83,9 +83,9 @@ const LendCard= (props: any): JSX.Element =>{
                     sx={{ fontWeight: "bold", color: "#6D676E" }}
                     variant="body1"
                 >
-                    NFT Price
+                    NFT Owner
                 </Typography>
-                <Typography variant="body1">{props.nftPrice}</Typography>
+                <Typography variant="body1">{props.nftOwner.slice(0,5)+"...." +props.nftOwner.slice(-5)}</Typography>
                 </Box>
             </CardContent>
             <Divider

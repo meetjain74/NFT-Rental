@@ -4,7 +4,7 @@ import { Provider } from "@ethersproject/providers";
 import RentalABI from "./NFTRental.json";
 import ERC721 from "./ERC721.json";
 
-export const contractAddress = "0x7E2f2557B59Be039Bcec550756e3B6d8dB3806A8";
+export const contractAddress = "0x70e5295292E0d2C68133a8333f42dF937722e15F";
 export const contractAbi = RentalABI;
 export const ERC721ABI = ERC721;
 
