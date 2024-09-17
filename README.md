@@ -27,6 +27,10 @@ Distribution of NFT in different categories:
 
 Owners who wish to rent out their NFTs can list them on the platform by specifying the collateral amount, the daily rent charge, and the maximum number of days one can rent that NFT. The renters who come across a particular NFT of interest can then initiate the NFT renting process by specifying the number of days they wish to borrow the NFT. After depositing the collateral and renting charge, the collateral and renting amount is deposited into a smart contract, with the predefined terms of the contract. The ownership of the NFT is transferred to the renter and the renting charge to the lender. The renter then returns the NFT after the renting period and collects the collateral.
 
+### Demo video for project
+
+[Project Demo Video](https://drive.google.com/file/d/1rHLgUhHrhhn-G_JAJhO75F-Pb6-LYZCe/view)
+
 ### NFT Lifecycle for our app
 
 <img width="447" alt="image" src="https://github.com/user-attachments/assets/bd728cfd-3e21-4771-ae1e-850019c447b9">
@@ -35,6 +39,8 @@ Owners who wish to rent out their NFTs can list them on the platform by specifyi
 ### Tech Stack
 
 <img width="984" alt="image" src="https://github.com/user-attachments/assets/b31530b6-21e8-4a31-9c4a-bc7683d70938">
+
+Related another repository: https://github.com/meetjain74/HardhatNFTRental
 
 ### Algorithms
 
